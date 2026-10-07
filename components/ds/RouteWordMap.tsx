@@ -117,8 +117,9 @@ function StepPopup({ item, dest: d, place: pl, open, last, hidden }: StepPopupPr
 /** the dashed leader from the destination to the side popup */
 function Leader({ dest: d, place: pl, open }: { dest: Pt; place: Placement; open: number }) {
   if (!("edge" in pl) || open <= 0.001) return null;
+  const len = Math.abs(pl.edge - d[0]) + 1;
   return (
-    <path className="pop-leader" d={`M${d[0]} ${d[1]}H${pl.edge}`} pathLength={100} strokeDasharray="100 100" strokeDashoffset={100 * (1 - open)} style={{ opacity: open }} />
+    <path className="pop-leader" d={`M${d[0]} ${d[1]}H${pl.edge}`} strokeDasharray={`${len} ${len}`} strokeDashoffset={len * (1 - open)} style={{ opacity: open }} />
   );
 }
 
@@ -176,8 +177,10 @@ export function RouteWordMap(props: RouteWordMapProps) {
   });
   const finished = route && route.last && f >= 1;
   if (route) {
+    // the dash is in real path units, not pathLength: Safari scales pathLength differently and the line ran ahead of its head
+    const dash = route.total + 1;
     layers.push(
-      <path key="active" className="route route-active" d={route.d} strokeWidth={lineW} pathLength={1000} strokeDasharray="1000 1000" strokeDashoffset={1000 * (1 - f)} style={color} />,
+      <path key="active" className="route route-active" d={route.d} strokeWidth={lineW} strokeDasharray={`${dash} ${dash}`} strokeDashoffset={dash * (1 - f)} style={color} />,
     );
     const destOp = ramp(t, PHASES.word - 0.04, PHASES.word + 0.02);
     if (destOp > 0 && !route.last) {
