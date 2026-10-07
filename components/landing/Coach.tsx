@@ -42,8 +42,9 @@ export function Coach() {
   const inset = Math.max(boxW / 4, logoH * (284 / 403) / 2 + 16);
   const bleed = Math.round(boxW / 2 - inset);
   const visible = boxW - bleed;
-  const leftPad = mobile ? 16 : Math.min(80, Math.max(16, vw * 0.05));
-  const copyW = Math.round(mobile ? vw - 32 : Math.max(280, Math.min(460, vw - visible - leftPad - 72)));
+  const gutter = Math.min(80, Math.max(24, vw * 0.05)); // --gutter
+  const leftPad = Math.max(gutter, (vw - 1360) / 2);
+  const copyW = Math.round(mobile ? vw - 2 * gutter : Math.max(280, Math.min(460, vw - visible - leftPad - 72)));
 
   return (
     <section ref={ref} id="coach" className="coach" style={{ height: fh }}>
