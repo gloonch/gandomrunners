@@ -1,0 +1,55 @@
+/* Gandom Runners — generated from tokens.json */
+:root, [data-theme="light"] {
+  --sand-50: #faf6ef;
+  --sand-100: #f3ece0;
+  --sand-200: #e7ddcc;
+  --paper: #ffffff;
+  --concrete-300: #d6cfc3;
+  --concrete-400: #c4bcae;
+  --concrete-500: #8f887d;
+  --ink: #2a2622;
+  --ink-muted: #5f574e;
+  --route-orange: #f36b21;
+  --route-orange-hover: #f6803d;
+  --ink-hover: #3a342f;
+  --route-orange-text: #b4470f;
+  --route-orange-soft: #fde6d6;
+  --olive: #55603a;
+  --olive-soft: #e9eedc;
+  --park: #cfdca9;
+  --park-edge: #b3c787;
+  --track-red: #d1584d;
+  --track-green: #488127;
+  --shadow-card: 0 1px 2px rgba(42, 38, 34, 0.05), 0 8px 24px rgba(42, 38, 34, 0.06);
+  --shadow-map: inset 0 0 80px rgba(42, 38, 34, 0.06);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-24: 96px;
+  --radius-sm: 6px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --route-width: 4px;
+  --route-width-mobile: 3px;
+  --route-completed-opacity: 0.32;
+  --street-width: 1.5px;
+  --marker-size: 14px;
+  --font-fa: Vazirmatn, "Noto Sans Arabic", Tahoma, sans-serif;
+  --font-en: Archivo, "Helvetica Neue", Arial, sans-serif;
+}
+.fa-display { font-family: var(--font-fa); font-size: 52px; line-height: 72px; font-weight: 800; }
+.fa-h1 { font-family: var(--font-fa); font-size: 36px; line-height: 54px; font-weight: 800; }
+.fa-h2 { font-family: var(--font-fa); font-size: 26px; line-height: 40px; font-weight: 700; }
+.fa-h3 { font-family: var(--font-fa); font-size: 19px; line-height: 32px; font-weight: 700; }
+.fa-body { font-family: var(--font-fa); font-size: 17px; line-height: 31px; font-weight: 400; }
+.fa-small { font-family: var(--font-fa); font-size: 14px; line-height: 25px; font-weight: 500; }
+.en-display { font-family: var(--font-en); font-size: 56px; line-height: 56px; font-weight: 800; letter-spacing: -0.02em; }
+.en-phrase { font-family: var(--font-en); font-size: 20px; line-height: 28px; font-weight: 600; }
+.en-eyebrow { font-family: var(--font-en); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.16em; }
+.en-label { font-family: var(--font-en); font-size: 14px; line-height: 20px; font-weight: 600; }

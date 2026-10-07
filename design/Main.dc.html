@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Gandom Runners — Run with direction</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/gandomrunners/tokens.css">
+<link rel="stylesheet" href="ds/gandomrunners/components/bundle.css">
+<script src="ds/gandomrunners/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&amp;family=Vazirmatn:wght@400;500;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#faf6ef;color:#2a2622;font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+a{color:#b4470f}a:hover{color:#2a2622}
+.gr-hero-map{border-radius:0 !important;box-shadow:none !important}
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.62),rgba(255,255,255,.28));-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid rgba(255,255,255,.75);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 12px 32px rgba(42,38,34,.10),0 2px 6px rgba(42,38,34,.05)}
+.nav-links{position:relative}
+.nav-pill{position:absolute;top:0;height:44px;border-radius:999px;background:#2a2622;box-shadow:0 4px 14px rgba(42,38,34,.18);transition:left .45s cubic-bezier(.65,0,.35,1),width .45s cubic-bezier(.65,0,.35,1),opacity .25s ease;pointer-events:none}
+.nav-link{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;font-size:14px;font-weight:500;color:#2a2622;text-decoration:none;border-radius:999px;transition:color .3s ease}
+.nav-link .num{font-size:11px;font-weight:600;color:#8f887d;letter-spacing:.04em;transition:color .3s ease}
+.nav-link .dot{width:6px;height:0;border-radius:50%;background:#f36b21;transition:height .3s ease,width .3s ease;width:0}
+.nav-link:hover{color:#2a2622;background:rgba(42,38,34,.06)}
+.nav-link.on{color:#faf6ef}
+.nav-link.on:hover{background:transparent;color:#faf6ef}
+.nav-link.on .num{color:rgba(250,246,239,.6)}
+.nav-link.on .dot{width:6px;height:6px}
+.nav-link:focus-visible,.nav-cta:focus-visible,.nav-brand:focus-visible,.chip:focus-visible,.info-btn:focus-visible{outline:2px solid #2a2622;outline-offset:2px}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px 0 16px;border-radius:999px;background:#2a2622;color:#faf6ef;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.nav-cta:hover{background:#3a342f;color:#faf6ef}
+.nav-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#2a2622;min-height:44px}
+.cta-short{display:none}
+.runner{stroke:#2a2622;transition:transform .2s ease}
+.runner.on{stroke:url(#runShimmer);transform:translateX(2px);filter:drop-shadow(0 0 4px rgba(243,107,33,.45))}
+@media (prefers-reduced-motion: reduce){.runner.on{filter:none;transform:none;stroke:#f36b21}.swipe-hint svg{animation:none}}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#2a2622}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#f36b21}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px 0 12px;border-radius:999px;border:1px solid rgba(42,38,34,.18);background:transparent;font:inherit;font-size:14px;font-weight:500;color:#2a2622;cursor:pointer}
+.chip:hover{background:#f3ece0}
+.chip.on{background:#2a2622;border-color:#2a2622;color:#faf6ef}
+.chip .n{font-size:12px;opacity:.6}
+.lbl-short{display:none}
+.swipe-hint{display:none;align-items:center;gap:10px;margin-top:24px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#5f574e}
+.swipe-hint svg{animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+.table-wrap{position:relative;margin-top:28px}
+.table-scroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#2a2622 #e7ddcc}
+.table-scroll:focus-visible{outline:2px solid #2a2622;outline-offset:4px}
+.table-scroll::-webkit-scrollbar{height:6px}
+.table-scroll::-webkit-scrollbar-track{background:#e7ddcc;border-radius:3px}
+.table-scroll::-webkit-scrollbar-thumb{background:#2a2622;border-radius:3px}
+.sched{width:100%;border-collapse:collapse;font-size:15px;min-width:760px}
+.sched th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5f574e;padding:0 16px 14px 0;border-bottom:1px solid #2a2622}
+.sched td{padding:18px 16px 18px 0;border-bottom:1px solid #e7ddcc;vertical-align:middle}
+.sched tbody tr:hover td{background:rgba(253,230,214,.35)}
+.area{display:flex;align-items:center;gap:10px;width:100%;min-width:230px}
+.area .info-btn{margin-left:auto}
+.area-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#f3ece0;flex:none}
+.area-ic.green{background:#e9eedc;color:#55603a}
+.info-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(42,38,34,.35);background:transparent;display:grid;place-items:center;padding:0;cursor:pointer;color:#2a2622;flex:none}
+.info-btn:hover,.info-btn.on{background:#2a2622;border-color:#2a2622;color:#faf6ef}
+.tba{display:inline-flex;align-items:center;gap:8px;color:#5f574e;font-size:14px}
+.tba::before{content:"";width:6px;height:6px;border-radius:50%;border:1.5px solid #8f887d}
+.row-cta{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;color:#b4470f;text-decoration:none;min-height:44px;white-space:nowrap}
+.row-cta:hover{text-decoration:underline;text-underline-offset:4px}
+.cta-photo{position:absolute;top:0;right:0;bottom:0;width:62%;background:url(assets/cta-photo.jpg) center / cover no-repeat;
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.35) 18%,#000 52%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.35) 18%,#000 52%)}
+.cta-copy > *{max-width:min(640px,48vw)}
+@media (max-width: 860px){
+  .cta-photo{width:72%;opacity:.9;
+    -webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.25) 30%,#000 75%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.25) 30%,#000 75%)}
+  .cta-copy > *{max-width:none}
+  .cta-copy p{max-width:62% !important}
+  .nav-links{display:none !important}
+  .brand-name{display:none !important}
+  .cta-long{display:none}
+  .cta-short{display:inline}
+  .stack-sm{flex-direction:column !important;align-items:stretch !important}
+  .chips{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px !important}
+  .chip{justify-content:center;padding:0 10px;font-size:13px;gap:6px}
+  .chip .n{display:none}
+  .lbl-long{display:none}
+  .lbl-short{display:inline}
+  .swipe-hint{display:flex}
+  .table-wrap::after{content:"";position:absolute;top:0;right:0;bottom:10px;width:56px;background:linear-gradient(to right,rgba(250,246,239,0),#faf6ef);pointer-events:none}
+  .table-scroll{padding-bottom:10px}
+}
+</style>
+</helmet>
+
+<div style="width: 100%; overflow-x: clip; background: #faf6ef;">
+
+  <!-- ============ NAV ============ -->
+  <div style="position: sticky; top: 0; height: 0; z-index: 50;">
+    <nav class="glass" aria-label="Main" style="position: absolute; top: 14px; left: clamp(12px, 3vw, 32px); right: clamp(12px, 3vw, 32px); height: 60px; box-sizing: border-box; padding: 0 8px 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-radius: 999px;">
+      <a class="nav-brand" href="#top" aria-label="Gandom Runners — home">
+        <img src="assets/logo.png" alt="" style="height: 40px; width: auto; display: block;">
+        <span class="brand-name" style="font-size: 16px; font-weight: 800; letter-spacing: -0.02em;">Gandom Runners</span>
+      </a>
+      <div class="nav-links" style="display: flex; align-items: center; gap: 2px;">
+        <span class="nav-pill" aria-hidden="true" style="left: {{pillX}}px; width: {{pillW}}px; opacity: {{pillOp}};"></span>
+        <a ref="{{navRoute}}" class="nav-link {{navOn.top}}" href="#top" aria-current="{{navCur.top}}"><span class="dot"></span><span class="num">01</span>Route</a>
+        <a ref="{{navCoach}}" class="nav-link {{navOn.coach}}" href="#coach" aria-current="{{navCur.coach}}"><span class="dot"></span><span class="num">02</span>Coach</a>
+        <a ref="{{navSchedule}}" class="nav-link {{navOn.schedule}}" href="#schedule" aria-current="{{navCur.schedule}}"><span class="dot"></span><span class="num">03</span>Schedule</a>
+      </div>
+      <a class="nav-cta" href="#contact" aria-label="Message us on Instagram">
+        <x-import component-from-global-scope="GandomRunners.Icon" name="brand-instagram" size="{{s20}}"></x-import>
+        <span class="cta-long">Message on Instagram</span><span class="cta-short">Message</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section ref="{{heroRef}}" id="top" style="position: relative; height: {{heroH}}px;">
+    <div style="position: sticky; top: 0; height: {{frameH}}px; overflow: hidden; background: #f3ece0;">
+      <x-import component-from-global-scope="GandomRunners.RouteWordMap" items="{{heroItems}}" progress="{{p}}" height="{{frameH}}" finish="{{finish}}" word-bounds="{{wordBounds}}" class-name="gr-hero-map" style="display: block; width: 100%;"></x-import>
+
+      <!-- the map fades out under the navbar -->
+      <div style="position: absolute; left: 0; right: 0; top: 0; height: 170px; background: linear-gradient(to bottom, #faf6ef 0, rgba(250, 246, 239, 0.88) 70px, rgba(250, 246, 239, 0) 170px); pointer-events: none;"></div>
+
+      <div style="position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; pointer-events: none;">
+        Scroll to
+        <svg class="runner {{runCls}}" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="run">
+          <defs>
+            <linearGradient id="runShimmer" x1="-1" y1="0" x2="0" y2="0" gradientUnits="objectBoundingBox">
+              <stop offset="0" stop-color="#f36b21"></stop>
+              <stop offset="0.45" stop-color="#f36b21"></stop>
+              <stop offset="0.5" stop-color="#ffd9bf"></stop>
+              <stop offset="0.55" stop-color="#f36b21"></stop>
+              <stop offset="1" stop-color="#f36b21"></stop>
+              <animate attributeName="x1" values="-1;1" dur="0.9s" repeatCount="indefinite"></animate>
+              <animate attributeName="x2" values="0;2" dur="0.9s" repeatCount="indefinite"></animate>
+            </linearGradient>
+          </defs>
+          <path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+          <path d="M4 17l5 1l.75 -1.5"></path>
+          <path d="M15 21l0 -4l-4 -3l1 -6"></path>
+          <path d="M7 12l0 -3l5 -1l3 3l3 1"></path>
+        </svg>
+      </div>
+      <h1 style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); margin: 0;">Gandom Runners — run with direction</h1>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" style="max-width: 1360px; margin: 0 auto; padding: clamp(96px, 12vw, 168px) clamp(16px, 4vw, 48px) clamp(64px, 8vw, 104px);">
+    <div class="eyebrow">About the route</div>
+    <h2 style="margin: 20px 0 0; max-width: 1040px; font-size: clamp(40px, 5.6vw, 84px); line-height: 1.04; font-weight: 400; letter-spacing: -0.035em;">
+      Here you don’t just run. You build <i style="font-weight: 500;">discipline</i>, <i style="font-weight: 500;">confidence</i> and a rhythm that <b style="font-weight: 800;">lasts.</b>
+    </h2>
+    <p style="margin: 32px 0 0; max-width: 520px; font-size: 16px; line-height: 28px; color: #5f574e;">Gandom Runners is a coach-led running community in Tehran — for people starting from zero, people who need a routine, and people who want a real group to keep going with.</p>
+  </section>
+
+  <!-- ============ COACH: stadium → logo turns in place while the section scrolls in, and back while it scrolls out ============ -->
+  <section ref="{{trackRef}}" id="coach" style="position: relative; height: {{frameH}}px;">
+    <div style="position: absolute; inset: 0; overflow: hidden;">
+      <div style="position: absolute; top: {{boxTop}}; right: {{trackRight}}px; width: {{boxW}}px; height: {{boxH}}px; transform: translateY(-50%);">
+        <img src="assets/track.png" alt="" style="position: absolute; left: 50%; top: 50%; width: {{imgW}}px; height: {{imgH}}px; transform: translate(-50%, -50%) rotate({{rot}}deg); opacity: {{trackOp}};">
+        <img src="assets/logo.png" alt="Gandom Runners logo" style="position: absolute; left: 50%; top: 50%; height: {{logoH}}px; width: auto; transform: translate(-50%, -50%) rotate({{rot}}deg); opacity: {{logoOp}};">
+      </div>
+
+      <div style="position: absolute; left: clamp(16px, 5vw, 80px); {{copyPos}} width: {{copyW}}px; display: flex; flex-direction: column; gap: 18px; z-index: 2;">
+        <div class="eyebrow">Coach-led</div>
+        <h2 style="margin: 0; font-size: clamp(38px, 4.6vw, 72px); line-height: 1; font-weight: 800; letter-spacing: -0.04em;">From the track<br><span style="font-weight: 400;">to your own route.</span></h2>
+        <p style="margin: 0; font-size: 16px; line-height: 28px; color: #5f574e;">Gandom is an official athletics federation coach and the team’s manager. Her coaching goes past the body — fear, motivation, habits, and the confidence to keep showing up.</p>
+        <div style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 8px 14px; border: 1.5px solid #2a2622; border-radius: 999px; font-size: 13px; font-weight: 600;">
+          <x-import component-from-global-scope="GandomRunners.Icon" name="rosette-discount-check" size="{{s16}}"></x-import>
+          Official Athletics Federation coach
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MIND × MILES + SCHEDULE ============ -->
+  <section ref="{{scheduleRef}}" id="schedule" style="max-width: 1360px; margin: 0 auto; padding: clamp(88px, 11vw, 140px) clamp(16px, 4vw, 48px) clamp(96px, 12vw, 160px);">
+    <div class="eyebrow">Schedule</div>
+    <div style="margin-top: 20px; font-size: clamp(64px, 11.5vw, 176px); line-height: .92; font-weight: 800; letter-spacing: -0.055em;">Mind <i style="font-weight: 400; color: #f36b21;">×</i> Miles</div>
+    <p style="margin: 28px 0 0; max-width: 560px; font-size: 16px; line-height: 28px; color: #5f574e;">City parks for easy mornings, a club for structured work, and mountain roads for the weekends. Days and times are announced weekly — pick a class, then message us to book. No prices here.</p>
+
+    <div class="chips" role="group" aria-label="Filter by place" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 56px;">
+      <sc-for list="{{chips}}" as="c" hint-placeholder-count="5">
+        <button type="button" class="chip {{c.cls}}" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">
+          <sc-if value="{{c.icon}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="GandomRunners.Icon" name="{{c.icon}}" size="{{s18}}"></x-import></sc-if>
+          <span class="lbl-long">{{c.label}}</span><span class="lbl-short">{{c.short}}</span> <span class="n">{{c.count}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div class="swipe-hint" aria-hidden="true">
+      <span>Swipe the table</span>
+      <svg width="28" height="12" viewBox="0 0 28 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h25"></path><path d="M21 1l5 5-5 5"></path></svg>
+    </div>
+    <div class="table-wrap">
+     <div class="table-scroll" tabindex="0" role="region" aria-label="Weekly schedule">
+      <table class="sched">
+        <thead><tr><th>Class</th><th>Area</th><th>Best for</th><th>Day &amp; time</th><th><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Book</span></th></tr></thead>
+        <tbody>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+            <tr>
+              <td style="font-weight: 700;">{{r.cls}}</td>
+              <td>
+                <span class="area">
+                  <span class="area-ic {{r.tint}}"><x-import component-from-global-scope="GandomRunners.Icon" name="{{r.icon}}" size="{{s18}}"></x-import></span>
+                  <span style="font-weight: 500;">{{r.area}}</span>
+                  <button type="button" class="info-btn {{r.infoCls}}" aria-label="{{r.infoLabel}}" aria-expanded="{{r.open}}" onClick="{{r.toggle}}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6"></path><path d="M12 7.5v.01"></path></svg>
+                  </button>
+                </span>
+              </td>
+              <td style="color: #5f574e;">{{r.best}}</td>
+              <td><span class="tba">To be announced</span></td>
+              <td><a class="row-cta" href="#contact">Message <x-import component-from-global-scope="GandomRunners.Icon" name="arrow-up-right" size="{{s16}}"></x-import></a></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+     </div>
+    </div>
+
+    <sc-if value="{{info}}" hint-placeholder-val="{{false}}">
+      <div class="glass" role="dialog" aria-label="{{info.title}}" style="position: fixed; left: {{info.x}}px; top: {{info.y}}px; transform: translateX(-50%); width: 260px; box-sizing: border-box; padding: 14px 16px 16px; border-radius: 16px; z-index: 60;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <div class="eyebrow" style="font-size: 11px;">{{info.title}}</div>
+          <button type="button" class="info-btn" aria-label="Close" onClick="{{closeInfo}}" style="width: 28px; height: 28px; border: 0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>
+          </button>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 6px; font-size: 15px; line-height: 22px; font-weight: 600;">
+          <x-import component-from-global-scope="GandomRunners.Icon" name="map-pin" size="{{s18}}"></x-import>
+          <span>{{info.text}}</span>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section ref="{{contactRef}}" id="contact" style="position: relative; background: #f3ece0; overflow: hidden;">
+    <div class="cta-photo" role="img" aria-label="Gandom Runners members running together on the track"></div>
+    <div class="cta-stage" style="position: relative;">
+      <div class="cta-copy" style="position: relative; z-index: 1; max-width: 1360px; margin: 0 auto; box-sizing: border-box; padding: clamp(88px, 11vw, 140px) clamp(16px, 4vw, 48px) clamp(64px, 8vw, 104px); display: flex; flex-direction: column; gap: 28px;">
+        <div class="eyebrow">Join</div>
+        <h2 style="margin: 0; font-size: clamp(64px, 10vw, 156px); line-height: .92; font-weight: 800; letter-spacing: -0.055em;">You don’t<br>run <i style="font-weight: 400;">alone.</i></h2>
+        <p style="margin: 0; max-width: 420px; font-size: 16px; line-height: 28px; color: #5f574e;">Want to start, keep going, and find a real group to run with? See the schedule, then message us to sign up.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <x-import component-from-global-scope="GandomRunners.Button" variant="primary" size="lg" href="#schedule">See the schedule</x-import>
+          <x-import component-from-global-scope="GandomRunners.Button" variant="dark" size="lg" href="#contact" icon="brand-instagram">Message on Instagram</x-import>
+        </div>
+      </div>
+    </div>
+    <footer style="position: relative; z-index: 1; max-width: 1360px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 48px) 32px; display: flex; justify-content: flex-start; gap: 24px; align-items: center; gap: 16px; border-top: 1px solid #e7ddcc; font-size: 12px; color: #5f574e;">
+      <img src="assets/logo.png" alt="Gandom Runners" style="height: 48px; width: auto;">
+      <span style="margin-right: auto;">Gandom Runners · Tehran · Run with direction.</span>
+    </footer>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.heroRef = React.createRef();
+    this.trackRef = React.createRef();
+    this.scheduleRef = React.createRef();
+    this.contactRef = React.createRef();
+    this.navRefs = { top: React.createRef(), coach: React.createRef(), schedule: React.createRef() };
+    this.state = { hp: 0, q: 0, vh: 820, vw: 1440, filter: 'all', info: null, scrolling: false, active: 'top', pill: { x: 0, w: 0 } };
+    this.onAnchor = this.onAnchor.bind(this);
+    this.raf = 0;
+    this.measure = this.measure.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+  }
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
+    window.addEventListener('resize', this.onScroll);
+    document.addEventListener('click', this.onAnchor, true);
+    this.measure();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(this.onScroll);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, { capture: true });
+    window.removeEventListener('resize', this.onScroll);
+    document.removeEventListener('click', this.onAnchor, true);
+    cancelAnimationFrame(this.raf);
+    cancelAnimationFrame(this.glide);
+    clearTimeout(this.idle);
+  }
+  // every in-page link (#top, #coach, #schedule, #contact) glides to its section instead of jumping
+  scroller(el) {
+    for (var n = el.parentElement; n && n !== document.body; n = n.parentElement) {
+      var oy = getComputedStyle(n).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && n.scrollHeight > n.clientHeight + 1) return n;
+    }
+    return document.scrollingElement || document.documentElement;
+  }
+  onAnchor(ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    var target = id && document.getElementById(id);
+    if (!target) return;
+    ev.preventDefault();
+    var box = this.scroller(target);
+    var isRoot = box === document.scrollingElement || box === document.documentElement;
+    var top0 = isRoot ? 0 : box.getBoundingClientRect().top;
+    var offset = id === 'schedule' ? 88 : 0;                       // clear the floating navbar where the section starts with copy
+    var from = box.scrollTop;
+    var to = Math.max(0, from + target.getBoundingClientRect().top - top0 - offset);
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    cancelAnimationFrame(this.glide);
+    if (reduce) { box.scrollTop = to; return; }
+    var dist = Math.abs(to - from), dur = Math.min(1500, Math.max(550, dist * 0.35)), t0 = performance.now(), self = this;
+    var ease = function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+    var step = function (now) {
+      var k = Math.min(1, (now - t0) / dur);
+      box.scrollTop = from + (to - from) * ease(k);
+      if (k < 1) self.glide = requestAnimationFrame(step);
+    };
+    this.glide = requestAnimationFrame(step);
+  }
+  onScroll() {
+    cancelAnimationFrame(this.raf);
+    this.raf = requestAnimationFrame(this.measure);
+  }
+  measure() {
+    var vh = window.innerHeight || 820, vw = window.innerWidth || 1440;
+    var fh = Math.max(560, Math.min(vh, 860));
+    var prog = function (el) {
+      if (!el) return 0;
+      var r = el.getBoundingClientRect();
+      var span = r.height - fh;
+      return span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+    };
+    var hp = prog(this.heroRef.current), qIn = 0, qOut = 0;
+    var tEl = this.trackRef.current;
+    if (tEl) {
+      var tr = tEl.getBoundingClientRect();
+      qIn = Math.min(1, Math.max(0, (vh - tr.top) / vh));               // 0 → 1 while the section scrolls in from the bottom
+      qOut = 1 - Math.min(1, Math.max(0, tr.bottom / tr.height));       // 0 → 1 while it scrolls out at the top
+    }
+    var q = qIn + qOut;                                                  // 0 … 2
+    var probe = vh * 0.45, active = 'top';
+    var cEl = this.trackRef.current, sEl = this.scheduleRef.current, kEl = this.contactRef.current;
+    if (cEl && cEl.getBoundingClientRect().top <= probe) active = 'coach';
+    if (sEl && sEl.getBoundingClientRect().top <= probe) active = 'schedule';
+    if (kEl && kEl.getBoundingClientRect().top <= probe) active = 'schedule';
+    var link = this.navRefs[active].current;
+    var pill = link && link.offsetWidth ? { x: link.offsetLeft, w: link.offsetWidth } : this.state.pill;
+    if (active !== this.state.active || pill.x !== this.state.pill.x || pill.w !== this.state.pill.w) this.setState({ active: active, pill: pill });
+    var moved = Math.abs(hp - this.state.hp) > 0.0005 || Math.abs(q - this.state.q) > 0.0005;
+    if (moved && !this.state.scrolling) this.setState({ scrolling: true });
+    if (moved) {
+      clearTimeout(this.idle);
+      this.idle = setTimeout(function () { this.setState({ scrolling: false }); }.bind(this), 450);
+    }
+    if (moved || vh !== this.state.vh || vw !== this.state.vw) {
+      this.setState({ hp: hp, q: q, vh: vh, vw: vw, info: moved ? null : this.state.info });
+    }
+  }
+  renderVals() {
+    var self = this;
+    var vw = this.state.vw, mobile = vw < 768;
+    var fh = Math.max(560, Math.min(this.state.vh, 860));
+
+    // ---- hero geometry: the route ends pulsing near the bottom centre
+    var finishY = mobile ? 84 : 88;
+    var topY = (132 / fh) * 100;                             // clear of the navbar and its fade
+    var p = 0.86 + this.state.hp * (3 - 0.86);
+
+    // ---- coach: stadium and logo turn together about one fixed centre
+    var ease = function (x) { x = Math.min(1, Math.max(0, x)); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
+    var a = ease(Math.min(1, this.state.q)), bOut = ease(Math.max(0, this.state.q - 1));
+    var rotDeg = 90 - 90 * a - 270 * bOut;                              // one revolution, never reversing
+    var logoVis = a * (1 - bOut);
+    var boxH = mobile ? Math.round(vw * 0.56) : Math.min(Math.round(fh * 0.6), 520);
+    // stadium and logo drawn at the SAME size: their outer ovals match through the cross-fade
+    var imgH = Math.round(boxH * 1.25);                     // stadium: smaller than before
+    var imgW = Math.round(imgH * 303 / 430);
+    var logoH = Math.round(imgH * (414 / 430) / (383 / 403)); // logo: bigger, its drawn oval = the stadium's (crops differ by their padding)
+    var boxW = imgH;
+    // the shared centre sits a quarter of the horizontal stadium inside the edge, or further in
+    // if the upright logo would otherwise be cut by the right edge
+    var inset = Math.max(boxW / 4, logoH * (284 / 403) / 2 + 16);
+    var bleed = Math.round(boxW / 2 - inset);
+    var visible = boxW - bleed;
+    var leftPad = mobile ? 16 : Math.min(80, Math.max(16, vw * 0.05));
+    var copyW = mobile ? vw - 32 : Math.max(280, Math.min(460, vw - visible - leftPad - 72));
+
+    // ---- schedule
+    var cats = {
+      streets: { label: 'City streets', short: 'Streets', icon: 'route', tint: '' },
+      park: { label: 'City park', short: 'Parks', icon: 'trees', tint: 'green' },
+      club: { label: 'Club', short: 'Club', icon: 'building', tint: '' },
+      nature: { label: 'Mountain & nature', short: 'Nature', icon: 'mountain', tint: 'green' },
+      private: { label: 'Private', icon: 'user', tint: '' }
+    };
+    var all = [
+      { id: 'east', cls: 'Group run', area: 'East Tehran', cat: 'streets', best: 'Starting from zero, staying consistent', place: 'East Tehran — urban routes; the meeting point is shared each week' },
+      { id: 'yas', cls: 'Group run', area: 'Yas Fatemi Park', cat: 'park', best: 'Open-air, lighter starts — beginner to intermediate', place: 'Yas Fatemi Park, Tehran' },
+      { id: 'club', cls: 'Structured training', area: 'Enghelab Club', cat: 'club', best: 'Running form, endurance, discipline', place: 'Enghelab Club, Tehran' },
+      { id: 'fasham', cls: 'Group run', area: 'Fasham', cat: 'nature', best: 'Outdoor energy, running with a group', place: 'Fasham — open roads north of Tehran' },
+      { id: 'lavasan', cls: 'Nature training', area: 'Lavasan', cat: 'nature', best: 'Weekends, longer routes', place: 'Lavasan — north-east of Tehran' },
+      { id: 'mountain', cls: 'Hiking day', area: 'Mountain routes', cat: 'nature', best: 'Trail days and hiking', place: 'Atashgah, Kalleh Kooh' },
+      { id: 'private', cls: 'Private class', area: 'By arrangement', cat: 'private', best: 'A personal goal, a plan made for you', place: 'A place agreed with the coach' }
+    ];
+    var f = this.state.filter, info = this.state.info;
+    var count = function (k) { return all.filter(function (r) { return k === 'all' || r.cat === k; }).length; };
+    var chips = ['all', 'streets', 'park', 'club', 'nature'].map(function (k) {
+      return { key: k, label: k === 'all' ? 'All' : cats[k].label, short: k === 'all' ? 'All' : cats[k].short, icon: k === 'all' ? '' : cats[k].icon, count: count(k), cls: f === k ? 'on' : '', pressed: f === k ? 'true' : 'false', pick: function () { self.setState({ filter: k, info: null }); } };
+    });
+    var rows = all.filter(function (r) { return f === 'all' || r.cat === f; }).map(function (r) {
+      var open = !!(info && info.id === r.id);
+      return {
+        cls: r.cls, area: r.area, best: r.best, icon: cats[r.cat].icon, tint: cats[r.cat].tint,
+        open: open ? 'true' : 'false', infoCls: open ? 'on' : '', infoLabel: 'Where is ' + r.area + '?',
+        toggle: function (ev) {
+          if (open) { self.setState({ info: null }); return; }
+          var b = ev.currentTarget.getBoundingClientRect();
+          var x = Math.min(Math.max(b.left + b.width / 2, 146), (window.innerWidth || 1440) - 146);
+          self.setState({ info: { id: r.id, x: Math.round(x), y: Math.round(b.bottom + 10), title: r.area, text: r.place } });
+        }
+      };
+    });
+
+    return {
+      heroRef: this.heroRef, trackRef: this.trackRef, scheduleRef: this.scheduleRef, contactRef: this.contactRef,
+      navRoute: this.navRefs.top, navCoach: this.navRefs.coach, navSchedule: this.navRefs.schedule,
+      navOn: { top: this.state.active === 'top' ? 'on' : '', coach: this.state.active === 'coach' ? 'on' : '', schedule: this.state.active === 'schedule' ? 'on' : '' },
+      navCur: { top: this.state.active === 'top' ? 'location' : 'false', coach: this.state.active === 'coach' ? 'location' : 'false', schedule: this.state.active === 'schedule' ? 'location' : 'false' },
+      pillX: this.state.pill.x, pillW: this.state.pill.w, pillOp: this.state.pill.w ? 1 : 0,
+      frameH: fh, heroH: Math.round(fh * 3.4),
+      p: p,
+      finish: { x: 50, y: finishY },
+      wordBounds: {
+        desktop: { x: 25, y: topY, width: 50, height: Math.max(30, finishY - 6 - topY) },
+        mobile: { x: 6, y: topY, width: 88, height: Math.max(26, Math.min(44, finishY - 34 - topY)) }
+      },
+      runCls: this.state.scrolling ? 'on' : '',
+      heroItems: [
+        { word: 'DISCIPLINE', eyebrow: 'Goal 01', title: 'Discipline, from the first step', description: 'Training isn’t just pushing the body. Rhythm, consistency and commitment get built here, one session at a time.' },
+        { word: 'COMMUNITY', eyebrow: 'Goal 02', title: 'You don’t run alone', description: 'The group makes it easier to show up, keep going and feel you belong somewhere real.' },
+        { word: 'CONFIDENCE', eyebrow: 'Goal 03', title: 'Confidence is built on the route', description: 'From easy first runs to serious routes — a body and a mind that move together.' }
+      ],
+      boxW: boxW, boxH: boxH, imgW: imgW, imgH: imgH,
+      boxTop: mobile ? '34%' : '50%',
+      trackRight: -bleed,
+      rot: Math.round(rotDeg * 10) / 10,
+      trackOp: (1 - logoVis).toFixed(3),
+      logoOp: logoVis.toFixed(3),
+      logoH: logoH,
+      copyW: Math.round(copyW),
+      copyPos: mobile ? 'bottom: 28px;' : 'top: 50%; transform: translateY(-50%);',
+      chips: chips, rows: rows, info: info,
+      closeInfo: function () { self.setState({ info: null }); },
+      s16: 16, s18: 18, s20: 20
+    };
+  }
+}
+</script>
+</body>
+</html>
