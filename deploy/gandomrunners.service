@@ -1,0 +1,17 @@
+[Unit]
+Description=Gandom Runners website (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=gandomrunners
+WorkingDirectory=/srv/gandomrunners/app
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
